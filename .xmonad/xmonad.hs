@@ -5,6 +5,7 @@ import qualified XMonad.StackSet as W
 
 -- XMonad Hooks
 import XMonad.Hooks.SetWMName (setWMName)
+import XMonad.Hooks.EwmhDesktops
 
 -- XMonad Util
 import XMonad.Util.EZConfig
@@ -81,9 +82,10 @@ myStartupHook = do
   setDefaultCursor xC_left_ptr
   setWMName "X_EXTENDED"
 
+myLogHook :: X ()
 
 main :: IO ()
-main = xmonad $ def
+main = xmonad $ ewmh $ def
   { modMask     = winMask
   , terminal    = myTerm
   , workspaces  = myWorkspaces
