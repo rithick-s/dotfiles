@@ -1,9 +1,15 @@
+-- XMonad
 import XMonad
 import System.Exit (exitSuccess)
 import qualified XMonad.StackSet as W
 
-import XMonad.Util
-import XMonad.Util.SpawnOnce
+-- XMonad Hooks
+import XMonad.Hooks.SetWMName (setWMName)
+
+-- XMonad Util
+import XMonad.Util.EZConfig
+import XMonad.Util.SpawnOnce (spawnOnce)
+import XMonad.Util.Cursor
 
 winMask, altMask :: KeyMask
 winMask = mod4Mask
@@ -21,7 +27,7 @@ myWorkspaces = map show [1..9]
 myBorderWidth :: Dimension
 myBorderWidth = 2
 
-myKeys :: [String, X ()]
+myKeys :: [(String, X ())]
 myKeys =
   [
     --XMonad
@@ -37,7 +43,9 @@ myStartupHook = do
   spawnOnce "thunar --daemon"
   spawnOnce "dbus-run-session pulseaudio --daemon"
   spawnOnce "emacs --daemon"
-  spawnOnce "xsetroot -cursor_name left_ptr"
+  --spawnOnce "xsetroot -cursor_name left_ptr"
+  setDefaultCursor xC_left_ptr
+  setWMName "X_EXTENDED"
 
 
 main :: IO ()
@@ -47,7 +55,7 @@ main = do
                , workspaces  = myWorkspaces
                , borderWidth = myBorderWidth
                , focusedBorderColor = myFocusedColor
-               , normalBorderColor  = myNormalBorder
+               , normalBorderColor  = myNormalColor
                --, startupHook =
                --, layoutHook  =
-               }
+               } `additionalKeysP` myKeys
