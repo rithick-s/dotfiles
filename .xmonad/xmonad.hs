@@ -29,7 +29,7 @@ winMask = mod4Mask
 altMask = mod1Mask
 
 myTerm, myEditor, myNormalColor, myFocusedColor, myFont :: String
-myFont         =  "xft:monospace:bold:italic:size=9:hinting=true:antialias=true"
+myFont         =  "xft:firacode:bold:italic:size=10:antialias=true:hinting=true"
 myTerm         =  "alacritty"
 myEditor       =  "emacsclient -c -a emacs"
 myNormalColor  =  "#faaa00"
@@ -65,7 +65,7 @@ myXPConfig = def { font                 = myFont
                  , promptBorderWidth    = 0
                  , position             = Top
                  , alwaysHighlight      = True
-                 , height               = 12
+                 , height               = 15
                  , maxComplRows         = Just 5
                  , historySize          = 256
                  , historyFilter        = id
@@ -98,9 +98,11 @@ myKeys =
 
 myStartupHook :: X ()
 myStartupHook = do
-  spawnOnce "thunar --daemon"
-  spawnOnce "dbus-run-session pulseaudio --daemon"
-  spawnOnce "emacs --daemon"
+  spawnOnce "feh --no-fehbg --bg-scale /home/user/.xmonad/res/wallpaper.jpg &"
+  spawnOnce "thunar --daemon &"
+  spawnOnce "dbus-run-session pulseaudio --daemon &"
+  spawnOnce "emacs --daemon &"
+  spawnOnce "picom -CGb &"
   --spawnOnce "xsetroot -cursor_name left_ptr"
   setDefaultCursor xC_left_ptr
   setWMName "X_EXTENDED"
@@ -116,6 +118,6 @@ main = xmonad $ ewmh $ def
   , borderWidth = myBorderWidth
   , focusedBorderColor = myFocusedColor
   , normalBorderColor  = myNormalColor
-  --, startupHook =
+  , startupHook = myStartupHook
   --, layoutHook  =
   } `additionalKeysP` myKeys
