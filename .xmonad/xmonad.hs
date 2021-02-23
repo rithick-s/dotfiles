@@ -5,11 +5,11 @@ import qualified XMonad.StackSet as W
 
 -- Data
 import qualified Data.Map as M
-import Data.Char (toUpper)
+--import Data.Char (toUpper)
 
 -- XMonad Hooks
 import XMonad.Hooks.SetWMName (setWMName)
-import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.EwmhDesktops (ewmh)
 
 -- XMonad Util
 import XMonad.Util.EZConfig
@@ -24,22 +24,8 @@ import XMonad.Prompt.Shell
 -- Control
 import Control.Arrow (first)
 
-winMask, altMask :: KeyMask
-winMask = mod4Mask
-altMask = mod1Mask
-
-myTerm, myEditor, myNormalColor, myFocusedColor, myFont :: String
-myFont         =  "xft:firacode:bold:italic:size=10:antialias=true:hinting=true"
-myTerm         =  "alacritty"
-myEditor       =  "emacsclient -c -a emacs"
-myNormalColor  =  "#faaa00"
-myFocusedColor =  "#0000bb"
-
-myWorkspaces :: [String]
-myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-
-myBorderWidth :: Dimension
-myBorderWidth = 2
+-- Custom Libraries
+import Monad.Variables
 
 myXPKeyMap :: M.Map (KeyMask, KeySym) (XP ())
 myXPKeyMap = M.fromList $
@@ -70,14 +56,14 @@ myXPConfig = def { font                 = myFont
                  , historySize          = 256
                  , historyFilter        = id
                  , promptKeymap         = myXPKeyMap
---                 , completionKey        = ""
---                 , changeModeKey        = ""
+--                 , completionKey        =
+--                 , changeModeKey        =
                  , defaultText          = ""
                  , autoComplete         = Just 10000
                  , showCompletionOnTab  = False
                  , searchPredicate      = fuzzyMatch
-                 , defaultPrompter      = id $ map toUpper
---                 , sorter               = ""
+--                 , defaultPrompter      = id $ map toUpper
+--                 , sorter               =
                  }
 
 myKeys :: [(String, X ())]
@@ -88,22 +74,32 @@ myKeys =
   , ("M-S-r"     , spawn "xmonad --restart")
   , ("M-S-q"     , io exitSuccess)
 
-  -- Run Prompt
+  -- Prompts
   , ("M-S-<Return>"     , shellPrompt myXPConfig)
+
+  -- Emacs
+  , ("M-e e"            , spawn myEditor)
 
   -- Utilities
   , ("M-<Return>"       , spawn myTerm)
 
+  -- Window Navigation
+  , ("M-m"              , windows W.focusMaster)
+  , ("M-j"              , windows W.focusDown)
+  , ("M-k"              , windows W.focusUp)
+  , ("M-S-m"            , windows W.swapMaster)
+  , ("M-S-j"            , windows W.swapDown)
+  , ("M-S-k"            , windows W.swapUp)
+
   ]
+
 
 myStartupHook :: X ()
 myStartupHook = do
   spawnOnce "feh --no-fehbg --bg-scale /home/user/.xmonad/res/wallpaper.jpg &"
   spawnOnce "thunar --daemon &"
-  spawnOnce "dbus-run-session pulseaudio --daemon &"
   spawnOnce "emacs --daemon &"
   spawnOnce "picom -CGb &"
-  --spawnOnce "xsetroot -cursor_name left_ptr"
   setDefaultCursor xC_left_ptr
   setWMName "X_EXTENDED"
 
