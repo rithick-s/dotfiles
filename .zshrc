@@ -60,7 +60,16 @@ PR_NO_COLOR="%{$terminfo[sgr0]%}"
 PS1="[%(!.${PR_RED}%n.$PR_LIGHT_YELLOW%n)%(!.${PR_LIGHT_YELLOW}@.$PR_RED@)$PR_NO_COLOR%(!.${PR_LIGHT_RED}%U%m%u.${PR_LIGHT_GREEN}%U%m%u)$PR_NO_COLOR:%(!.${PR_RED}%2c.${PR_BLUE}%2c)$PR_NO_COLOR]%(?..[${PR_LIGHT_RED}%?$PR_NO_COLOR])%(!.${PR_LIGHT_RED}#.${PR_LIGHT_GREEN}$) "
 RPS1="$PR_LIGHT_YELLOW(%D{%m-%d %H:%M})$PR_NO_COLOR"
 unsetopt ALL_EXPORT
-export ZPOOL_VDEV_NAME_PATH=1
+
+PATH=$PATH:/home/user/.emacs.d/bin/
+PATH=$PATH:/home/user/.cabal/bin
+PATH=$PATH:/home/user/src_git/go/bin
+export GOARCH="amd64"
+export GOHOSTARCH="amd64"
+export GOMODCACHE="/home/user/src_git/pkg/mod"
+export GOPATH="/home/user/src_git/go"
+export GOROOT="/usr/lib/go"
+export GOTOOL="/usr/lib/go/pkg/tool/linux_amd64"
 
 ### set common functions
 #############
@@ -72,6 +81,8 @@ mcd () {
 
 ### Set alias
 #############
+alias o="doas"
+alias sudo="doas"
 alias ..="cd .."
 alias cd..="cd .."
 alias ll="ls -lisA --color=auto"
