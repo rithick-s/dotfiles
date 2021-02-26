@@ -89,7 +89,12 @@ alias ll="ls -lisA --color=auto"
 alias mkdir="mkdir -pv"
 alias ls="ls -CF --color=auto"
 alias wget="wget -c"
-alias grep='grep --color=auto'
+alias gc="git commit"
+alias ga="git add"
+alias gf="git fetch"
+alias gm="git merge"
+alias gpull="git pull"
+alias gpush="git push"
 
 ### Bind keys
 #############
