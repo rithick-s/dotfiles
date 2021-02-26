@@ -8,6 +8,8 @@ import qualified Data.Map as M
 --import Data.Char (toUpper)
 import Data.Tree
 
+import XMonad.Actions.CycleWS
+
 -- XMonad Hooks
 import XMonad.Hooks.SetWMName (setWMName)
 import XMonad.Hooks.EwmhDesktops (ewmh)
@@ -16,6 +18,7 @@ import XMonad.Hooks.EwmhDesktops (ewmh)
 import XMonad.Layout.ResizableTile
 
 -- XMonad.Layout Modifier libs
+import XMonad.Layout.Magnifier
 import XMonad.Layout.Renamed
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.Spacing
@@ -58,7 +61,7 @@ myFocusedColor :: String
 myFocusedColor =  "#0000bb"
 
 myFont :: String
-myFont  =  "xft:firacode:bold:italic:size=10:antialias=true:hinting=true"
+myFont =  "xft:firacode:bold:size=10:antialias=true:hinting=true"
 
 myBrowser :: String
 myBrowser = "firefox"
@@ -111,14 +114,49 @@ myTreeSelectMenu a = TS.treeselectAction a
                        [ Node (TS.TSNode "Calculatr" "Emacs Calculator" (spawn $ myEditor ++ " --eval '(calc)'")) []
                        , Node (TS.TSNode "Archive Manager" "Manage Archives and Compressed Data" (spawn "engrampa")) []
                        , Node (TS.TSNode "MuPDF" "PDF/XPS/EBook Viewer" (spawn "mupdf")) []
+                       , Node (TS.TSNode "Telegram Desktop" "Telegram Messaging Client" (spawn "telegram-desktop")) []
                        ]
                      , Node (TS.TSNode "+ Web Sites" "List of Websites Mostly Used." (return ()))
                        [ Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
+                       , Node (TS.TSNode "Void Linux" "https://docs.voidlinux.org" (spawn $ myBrowser ++ "https://docs.voidlinux.org/")) []
+                       --, Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
+                       --, Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
+                       --, Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
+                       --, Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
+                       --, Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
                        ]
-                     , Node (TS.TSNode "System Utilities" "Management Utilities/System Apps" (return ()))
+                     , Node (TS.TSNode "+ System Utilities" "Management Utilities/System Apps" (return ()))
                      [ Node (TS.TSNode "LXAppearance" "Customize Themes/Widgets" (spawn "lxappearance")) []
                      ]
                      ]
+
+myTSConfig :: TS.TSConfig a
+myTSConfig = TS.TSConfig { TS.ts_hidechildren = True
+                              , TS.ts_background   = 0xdd282c34
+                              , TS.ts_font         = myFont
+                              , TS.ts_node         = (0xffd0d0d0, 0xff1c1f24)
+                              , TS.ts_nodealt      = (0xffd0d0d0, 0xff282c34)
+                              , TS.ts_highlight    = (0xffffffff, 0xff755999)
+                              , TS.ts_extra        = 0xffd0d0d0
+                              , TS.ts_node_width   = 200
+                              , TS.ts_node_height  = 25
+                              , TS.ts_originX      = 100
+                              , TS.ts_originY      = 100
+                              , TS.ts_indent       = 80
+                              , TS.ts_navigate     = myTreeNavigation
+                              }
+
+myTreeNavigation = M.fromList
+    [ ((0, xK_Escape),   TS.cancel)
+    , ((0, xK_Return),   TS.select)
+    , ((0, xK_space),    TS.select)
+    , ((0, xK_Up),       TS.movePrev)
+    , ((0, xK_Down),     TS.moveNext)
+    , ((0, xK_Left),     TS.moveParent)
+    , ((0, xK_Right),    TS.moveChild)
+    , ((0, xK_o),        TS.moveHistBack)
+    , ((0, xK_i),        TS.moveHistForward)
+    ]
 
 myKeys :: [(String, X ())]
 myKeys =
@@ -138,6 +176,14 @@ myKeys =
 
   -- Utilities
   , ("M-<Return>"       , spawn myTerm)
+  , ("M-t t"            , myTreeSelectMenu myTSConfig )
+
+  -- WorkSpaces
+  , ("M-<Left>"         , nextWS)
+  , ("M-S-<Left>"       , shiftToNext)
+  , ("M-<Right>"        , prevWS)
+  , ("M-S-<Right>"      , shiftToPrev)
+  , ("M-<Tab>"          , toggleWS)
 
   -- Window Navigation
   , ("M-m"              , windows W.focusMaster)
@@ -163,6 +209,10 @@ mySpacing' i = spacingRaw False (Border i i i i) True (Border i i i i) True
 tall = renamed [Replace "tall"]
        $ mySpacing 2
        $ ResizableTall 1 (3/100) (1/2) []
+
+magnify = renamed [ Replace "magnify"]
+          $ mySpacing 4
+          $ magnifier
 
 myLayoutHook = tall
 
