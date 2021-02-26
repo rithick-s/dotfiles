@@ -6,10 +6,22 @@ import qualified XMonad.StackSet as W
 -- Data
 import qualified Data.Map as M
 --import Data.Char (toUpper)
+import Data.Tree
 
 -- XMonad Hooks
 import XMonad.Hooks.SetWMName (setWMName)
 import XMonad.Hooks.EwmhDesktops (ewmh)
+
+-- XMonad.Layout
+import XMonad.Layout.ResizableTile
+
+-- XMonad.Layout Modifier libs
+import XMonad.Layout.Renamed
+import XMonad.Layout.LayoutModifier
+import XMonad.Layout.Spacing
+
+-- XMonad Actions
+import qualified XMonad.Actions.TreeSelect as TS
 
 -- XMonad Util
 import XMonad.Util.EZConfig
@@ -24,8 +36,35 @@ import XMonad.Prompt.Shell
 -- Control
 import Control.Arrow (first)
 
--- Custom Libraries
-import Monad.Variables
+winMask :: KeyMask
+winMask = mod4Mask
+
+altMask :: KeyMask
+altMask = mod1Mask
+
+myBorderWidth :: Dimension
+myBorderWidth = 2
+
+myTerm :: String
+myTerm  =  "alacritty"
+
+myEditor :: String
+myEditor  =  "emacsclient -c -a emacs"
+
+myNormalColor :: String
+myNormalColor  =  "#faaa00"
+
+myFocusedColor :: String
+myFocusedColor =  "#0000bb"
+
+myFont :: String
+myFont  =  "xft:firacode:bold:italic:size=10:antialias=true:hinting=true"
+
+myBrowser :: String
+myBrowser = "firefox"
+
+myWorkspaces :: [String]
+myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 myXPKeyMap :: M.Map (KeyMask, KeySym) (XP ())
 myXPKeyMap = M.fromList $
@@ -66,6 +105,21 @@ myXPConfig = def { font                 = myFont
 --                 , sorter               =
                  }
 
+myTreeSelectMenu :: TS.TSConfig (X ()) -> X ()
+myTreeSelectMenu a = TS.treeselectAction a
+                     [ Node (TS.TSNode "+ Accessories" "Accessories & Apps" (return ()))
+                       [ Node (TS.TSNode "Calculatr" "Emacs Calculator" (spawn $ myEditor ++ " --eval '(calc)'")) []
+                       , Node (TS.TSNode "Archive Manager" "Manage Archives and Compressed Data" (spawn "engrampa")) []
+                       , Node (TS.TSNode "MuPDF" "PDF/XPS/EBook Viewer" (spawn "mupdf")) []
+                       ]
+                     , Node (TS.TSNode "+ Web Sites" "List of Websites Mostly Used." (return ()))
+                       [ Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
+                       ]
+                     , Node (TS.TSNode "System Utilities" "Management Utilities/System Apps" (return ()))
+                     [ Node (TS.TSNode "LXAppearance" "Customize Themes/Widgets" (spawn "lxappearance")) []
+                     ]
+                     ]
+
 myKeys :: [(String, X ())]
 myKeys =
   [
@@ -79,6 +133,8 @@ myKeys =
 
   -- Emacs
   , ("M-e e"            , spawn myEditor)
+  , ("M-e d"            , spawn "emacsclient -c -a 'emacs' --eval '(dired nil)'")
+  , ("M-e b"            , spawn $ myEditor ++ " --eval '(ibuffer)'")
 
   -- Utilities
   , ("M-<Return>"       , spawn myTerm)
@@ -91,7 +147,24 @@ myKeys =
   , ("M-S-j"            , windows W.swapDown)
   , ("M-S-k"            , windows W.swapUp)
 
+  -- Function[Emulated] Keys
+  , ("<XF86MonBrightnessUp>"    , spawn "xbacklight -inc 3")
+  , ("<XF86MonBrightnessDown>"  , spawn "xbacklight -dec 3")
+  , ("<XF86AudioLowerVolume>"   , spawn "ponymix decrease 3")
+  , ("<XF86AudioRaiseVolume>"   , spawn "ponymix increase 3")
+  , ("<XF86AudioMute>"           , spawn "ponymix toggle")
+
   ]
+
+mySpacing, mySpacing' :: Integer -> l a -> ModifiedLayout Spacing l a
+mySpacing  i  = spacingRaw True  (Border i i i i) True (Border i i i i) True
+mySpacing' i = spacingRaw False (Border i i i i) True (Border i i i i) True
+
+tall = renamed [Replace "tall"]
+       $ mySpacing 2
+       $ ResizableTall 1 (3/100) (1/2) []
+
+myLayoutHook = tall
 
 
 myStartupHook :: X ()
@@ -115,5 +188,5 @@ main = xmonad $ ewmh $ def
   , focusedBorderColor = myFocusedColor
   , normalBorderColor  = myNormalColor
   , startupHook = myStartupHook
-  --, layoutHook  =
+  , layoutHook  = myLayoutHook
   } `additionalKeysP` myKeys
