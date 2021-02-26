@@ -125,6 +125,11 @@ myTreeSelectMenu a = TS.treeselectAction a
                        --, Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
                        --, Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
                        ]
+                     , Node (TS.TSNode "+ Emacs" "Elisp Intrepreter/Text Editor" (return ()))
+                     [ Node (TS.TSNode "Emacs" "Emacs Dashboard" (spawn myEditor)) []
+                     , Node (TS.TSNode "Emacs iBuffer" "List all Interacctive Buffers" (spawn $ myEditor ++ " --eval '(ibuffer)'")) []
+                     , Node (TS.TSNode "Emacs Dired" "Directory Editor - Emacs" (spawn $ myEditor ++ " --eval '(dired nil)'")) []
+                     ]
                      , Node (TS.TSNode "+ System Utilities" "Management Utilities/System Apps" (return ()))
                      [ Node (TS.TSNode "LXAppearance" "Customize Themes/Widgets" (spawn "lxappearance")) []
                      ]
