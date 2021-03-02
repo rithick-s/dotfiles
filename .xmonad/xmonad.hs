@@ -64,7 +64,7 @@ myFont :: String
 myFont =  "xft:firacode:bold:size=10:antialias=true:hinting=true"
 
 myBrowser :: String
-myBrowser = "firefox"
+myBrowser = "firefox "
 
 myWorkspaces :: [String]
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
@@ -203,7 +203,8 @@ myKeys =
   , ("<XF86MonBrightnessDown>"  , spawn "xbacklight -dec 3")
   , ("<XF86AudioLowerVolume>"   , spawn "ponymix decrease 3")
   , ("<XF86AudioRaiseVolume>"   , spawn "ponymix increase 3")
-  , ("<XF86AudioMute>"           , spawn "ponymix toggle")
+  , ("<XF86AudioMute>"          , spawn "ponymix toggle")
+  , ("<Print>"                  , spawn "scrot")
 
   ]
 
