@@ -43,7 +43,7 @@ quoted :: String -> String
 quoted str = "\"" ++ str ++ "\""
 
 sendNotification :: String -> String -> X ()
-sendNotification _title desc = spawn $ "notify-send" ++ " " ++ (quoted _title) ++ " " ++ (quoted desc)
+sendNotification msg desc = spawn $ concat ["notify-send", " ", quoted msg, " ", quoted desc]
 
 winMask :: KeyMask
 winMask = mod4Mask
@@ -126,6 +126,7 @@ myTreeSelectMenu a = TS.treeselectAction a
                        [ Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
                        , Node (TS.TSNode "Void Linux" "https://docs.voidlinux.org" (spawn $ myBrowser ++ "https://docs.voidlinux.org/")) []
                        , Node (TS.TSNode "Send Nofication" "Send a Hello, Notification!" (sendNotification "Hello, User" "Sample Hello Notifiaction")) []
+                       , Node (TS.TSNode "Notification 2" "Not2" (sendNotification "Not2Title" "Notificication 2 Desc")) []
                        --, Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
                        --, Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
                        --, Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
