@@ -39,6 +39,12 @@ import XMonad.Prompt.Shell
 -- Control
 import Control.Arrow (first)
 
+quoted :: String -> String
+quoted str = "\"" ++ str ++ "\""
+
+sendNotification :: String -> String -> X ()
+sendNotification _title desc = spawn $ "notify-send" ++ " " ++ (quoted _title) ++ " " ++ (quoted desc)
+
 winMask :: KeyMask
 winMask = mod4Mask
 
@@ -119,6 +125,7 @@ myTreeSelectMenu a = TS.treeselectAction a
                      , Node (TS.TSNode "+ Web Sites" "List of Websites Mostly Used." (return ()))
                        [ Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
                        , Node (TS.TSNode "Void Linux" "https://docs.voidlinux.org" (spawn $ myBrowser ++ "https://docs.voidlinux.org/")) []
+                       , Node (TS.TSNode "Send Nofication" "Send a Hello, Notification!" (sendNotification "Hello, User" "Sample Hello Notifiaction")) []
                        --, Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
                        --, Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
                        --, Node (TS.TSNode "Github" "https://github.com/rithick-s" (spawn $ myBrowser ++ "https://github.com/rithick-s")) []
